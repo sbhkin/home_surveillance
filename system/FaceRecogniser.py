@@ -251,7 +251,9 @@ class FaceRecogniser(object):
         labelsNum = self.le.transform(labels)
         nClasses = len(self.le.classes_)
         print("Training for {} classes.".format(nClasses))
-
+        print("classifier : {}".format(classifier))
+        print("ldaDim : {}".format(ldaDim))
+        
         if classifier == 'LinearSvm':
             self.clf = SVC(C=1, kernel='linear', probability=True)
         elif classifier == 'GMM':
