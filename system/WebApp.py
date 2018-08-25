@@ -17,7 +17,7 @@
 # limitations under the License.
 
 from flask import Flask, render_template, Response, redirect, url_for, request, jsonify, send_file, session, g
-from flask.ext.uploads import UploadSet, configure_uploads, IMAGES
+# from flask.ext.uploads import UploadSet, configure_uploads, IMAGES
 import Camera
 from flask.ext.socketio import SocketIO, send, emit
 import SurveillanceSystem
@@ -47,9 +47,9 @@ monitoringThread.daemon = False
 app = Flask('SurveillanceWebServer')
 app.config['SECRET_KEY'] = os.urandom(24) # Used for session management
 socketio = SocketIO(app)
-photos = UploadSet('photos', IMAGES)
+# photos = UploadSet('photos', IMAGES)
 app.config['UPLOADED_PHOTOS_DEST'] = 'uploads/imgs'
-configure_uploads(app, photos)
+# configure_uploads(app, photos)
 
 
 @app.route('/', methods=['GET','POST'])
@@ -82,7 +82,8 @@ def before_request():
 def upload():
     if request.method == 'POST' and 'photo' in request.files:
         try:
-            filename = photos.save(request.files['photo'])
+            # filename = photos.save(request.files['photo'])
+            filename = ""
             image = request.files['photo']
             name = request.form.get('name')
             image = cv2.imread('uploads/imgs/' + filename)
