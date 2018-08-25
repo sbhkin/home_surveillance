@@ -86,7 +86,7 @@ class IPCamera(object):
 		self.video = cv2.VideoCapture(camURL) # VideoCapture object used to capture frames from IP camera
 		logger.info("We are opening the video feed.")
         self.url = camURL
-		if not self.video.isOpened():
+        if not self.video.isOpened():
 			self.video.open()
 		logger.info("Video feed open.")
 		self.dump_video_info()  # logging every specs of the video feed
