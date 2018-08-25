@@ -54,11 +54,11 @@ CAPTURE_HZ = 30.0 # Determines frame rate at which frames are captured from IP c
 class IPCamera(object):
 	"""The IPCamera object continually captures frames
 	from a camera and makes these frames available for
-	proccessing and streamimg to the web client. A 
-	IPCamera can be processed using 5 different processing 
-	functions detect_motion, detect_recognise, 
-	motion_detect_recognise, segment_detect_recognise, 
-	detect_recognise_track. These can be found in the 
+	proccessing and streamimg to the web client. A
+	IPCamera can be processed using 5 different processing
+	functions detect_motion, detect_recognise,
+	motion_detect_recognise, segment_detect_recognise,
+	detect_recognise_track. These can be found in the
 	SureveillanceSystem object, within the process_frame function"""
 
 	def __init__(self,camURL, cameraFunction, dlibDetection, fpsTweak):
@@ -73,9 +73,9 @@ class IPCamera(object):
 		self.FPSstart = time.time()
 		self.FPScount = 0
 		self.motion = False # Used for alerts and transistion between system states i.e from motion detection to face detection
-		self.people = {} # Holds person ID and corresponding person object 
+		self.people = {} # Holds person ID and corresponding person object
 		self.trackers = [] # Holds all alive trackers
-		self.cameraFunction = cameraFunction 
+		self.cameraFunction = cameraFunction
 		self.dlibDetection = dlibDetection # Used to choose detection method for camera (dlib - True vs opencv - False)
 		self.fpsTweak = fpsTweak # used to know if we should apply the FPS work around when you have many cameras
 		self.rgbFrame = None
@@ -85,7 +85,7 @@ class IPCamera(object):
 		self.peopleDictLock = threading.Lock() # Used to block concurrent access to people dictionary
 		self.video = cv2.VideoCapture(camURL) # VideoCapture object used to capture frames from IP camera
 		logger.info("We are opening the video feed.")
-	 	self.url = camURL
+        self.url = camURL
 		if not self.video.isOpened():
 			self.video.open()
 		logger.info("Video feed open.")
@@ -110,12 +110,12 @@ class IPCamera(object):
 
 		while True:
 			success, frame = self.video.read()
-			self.captureEvent.clear() 
-			if success:		
+			self.captureEvent.clear()
+			if success:
 				self.captureFrame  = frame
-				self.captureEvent.set() 
+				self.captureEvent.set()
 
-			FPScount += 1 
+			FPScount += 1
 
 			if FPScount == 5:
 				self.streamingFPS = 5/(time.time() - FPSstart)
@@ -135,23 +135,23 @@ class IPCamera(object):
 		the client. It is nessacery to make the image smaller to
 		improve streaming performance"""
 
-		capture_blocker = self.captureEvent.wait()  
-		frame = self.captureFrame 	
+		capture_blocker = self.captureEvent.wait()
+		frame = self.captureFrame
 		frame = ImageUtils.resize_mjpeg(frame)
 		ret, jpeg = cv2.imencode('.jpg', frame)
 		return jpeg.tostring()
 
 	def read_frame(self):
-		capture_blocker = self.captureEvent.wait()  
-		frame = self.captureFrame 	
+		capture_blocker = self.captureEvent.wait()
+		frame = self.captureFrame
 		return frame
 
 	def read_processed(self):
 		frame = None
 		with self.captureLock:
-			frame = self.processing_frame	
+			frame = self.processing_frame
 		while frame == None: # If there are problems, keep retrying until an image can be read.
-			with self.captureLock:	
+			with self.captureLock:
 				frame = self.processing_frame
 
 		frame = ImageUtils.resize_mjpeg(frame)
