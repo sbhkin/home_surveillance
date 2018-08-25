@@ -125,7 +125,7 @@ def system_monitoring():
             #print "FPS: " +str(camera.processingFPS) + " " + str(camera.streamingFPS)
             app.logger.info("FPS: " +str(camera.processingFPS) + " " + str(camera.streamingFPS))
         systemState = {'cpu':cpu_usage(),'memory':memory_usage(), 'processingFPS': cameraProcessingFPS}
-        socketio.emit('system_monitoring', json.dumps(systemState) ,namespace='/surveillance')
+        socketio.emit('system_monitoring', json.dumps(systemState))
         time.sleep(3)
 
 def cpu_usage():
@@ -255,7 +255,7 @@ def add_face():
             wriitenToDir = HomeSurveillance.add_face(predicted_name,img, upload = False)
 
         systemData = {'camNum': len(HomeSurveillance.cameras) , 'people': HomeSurveillance.peopleDB, 'onConnect': False}
-        socketio.emit('system_data', json.dumps(systemData) ,namespace='/surveillance')
+        socketio.emit('system_data', json.dumps(systemData))
 
         data = {"face_added":  wriitenToDir}
         return jsonify(data)
@@ -321,36 +321,36 @@ def update_faces():
                         peopledata.append(persondict)
         print('[WEB] PEOPLE DETECTED ==>')
         print(peopledata)
-        socketio.emit('people_detected', json.dumps(peopledata) ,namespace='/surveillance')
+        socketio.emit('people_detected', json.dumps(peopledata) )
         time.sleep(4)
 
 def alarm_state():
      """Used to push alarm state to client"""
      while True:
             alarmstatus = {'state': HomeSurveillance.alarmState , 'triggered': HomeSurveillance.alarmTriggerd }
-            socketio.emit('alarm_status', json.dumps(alarmstatus) ,namespace='/surveillance')
+            socketio.emit('alarm_status', json.dumps(alarmstatus) )
             time.sleep(3)
 
 
-@socketio.on('alarm_state_change', namespace='/surveillance')
+@socketio.on('alarm_state_change')
 def alarm_state_change():
     HomeSurveillance.change_alarm_state()
 
-@socketio.on('panic', namespace='/surveillance')
+@socketio.on('panic')
 def panic():
     HomeSurveillance.trigger_alarm()
 
 
-@socketio.on('my event', namespace='/surveillance') # socketio used to receive websocket messages, Namespaces allow a cliet to open multiple connections to the server that are multiplexed on a single socket
+@socketio.on('my event') # socketio used to receive websocket messages, Namespaces allow a cliet to open multiple connections to the server that are multiplexed on a single socket
 def test_message(message):   # Custom events deliver JSON payload
     emit('my response', {'data': message['data']}) # emit() sends a message under a custom event name
 
-@socketio.on('my broadcast event', namespace='/surveillance')
+@socketio.on('my broadcast event')
 def test_message(message):
     emit('my response', {'data': message['data']}, broadcast=True) # broadcast=True optional argument all clients connected to the namespace receive the message
 
 
-@socketio.on('connect', namespace='/surveillance')
+@socketio.on('connect')
 def connect():
 
     # Need visibility of global thread object
@@ -399,9 +399,9 @@ def connect():
             alerts.append(alertData)
 
     systemData = {'camNum': len(HomeSurveillance.cameras) , 'people': HomeSurveillance.peopleDB, 'cameras': cameras, 'alerts': alerts, 'onConnect': True}
-    socketio.emit('system_data', json.dumps(systemData) ,namespace='/surveillance')
+    socketio.emit('system_data', json.dumps(systemData) )
 
-@socketio.on('disconnect', namespace='/surveillance')
+@socketio.on('disconnect')
 def disconnect():
     #print('Client disconnected')
     app.logger.info("Client disconnected")
