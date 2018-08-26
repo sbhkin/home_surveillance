@@ -136,13 +136,10 @@ class IPCamera(object):
 		improve streaming performance"""
 
 		capture_blocker = self.captureEvent.wait()  
-		jpegstr = ""
-		if frame:
-		    frame = self.captureFrame 	
-		    frame = ImageUtils.resize_mjpeg(frame)
-		    ret, jpeg = cv2.imencode('.jpg', frame)
-		    jpegstr = jpeg.tostring()
-		return jpegstr
+		frame = self.captureFrame 	
+		frame = ImageUtils.resize_mjpeg(frame)
+		ret, jpeg = cv2.imencode('.jpg', frame)
+		return jpeg.tostring()
 
 	def read_frame(self):
 		capture_blocker = self.captureEvent.wait()  
@@ -157,12 +154,9 @@ class IPCamera(object):
 			with self.captureLock:	
 				frame = self.processing_frame
 
-		jpegstr = ""
-		if frame:
-		    frame = ImageUtils.resize_mjpeg(frame)
-		    ret, jpeg = cv2.imencode('.jpg', frame)
-		    jpegstr = jpeg.tostring()
-		return jpegstr
+		frame = ImageUtils.resize_mjpeg(frame)
+		ret, jpeg = cv2.imencode('.jpg', frame)
+		return jpeg.tostring()
 
 	def dump_video_info(self):
 		logger.info("---------Dumping video feed info---------------------")
