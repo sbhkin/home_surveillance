@@ -136,10 +136,13 @@ class IPCamera(object):
 		improve streaming performance"""
 
 		capture_blocker = self.captureEvent.wait()  
-		frame = self.captureFrame 	
-		frame = ImageUtils.resize_mjpeg(frame)
-		ret, jpeg = cv2.imencode('.jpg', frame)
-		return jpeg.tostring()
+		jpegstr = ""
+		if frame:
+		    frame = self.captureFrame 	
+		    frame = ImageUtils.resize_mjpeg(frame)
+		    ret, jpeg = cv2.imencode('.jpg', frame)
+		    jpegstr = jpeg.tostring()
+		return jpegstr
 
 	def read_frame(self):
 		capture_blocker = self.captureEvent.wait()  
